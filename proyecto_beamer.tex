@@ -1,0 +1,548 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+% --- Configuración de Tema y Colores ---
+\usetheme{Singapore}
+\usecolortheme{whale}
+\setbeamertemplate{navigation symbols}{}
+
+% --- Paquetes requeridos ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{booktabs}
+
+% --- Configuración para Listados de Código ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.97}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\scriptsize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    frame=lines,
+    rulecolor=\color{black!20}
+}
+\lstset{style=mystyle}
+
+% --- Información de la Portada ---
+\title[Administrador de Música]{Administrador de Música}
+\institute[ESFM - IPN]{Escuela Superior de Física y Matemáticas}
+\date{\today}
+
+\begin{document}
+
+% ----------------------------------------------------
+% 1. TÍTULO
+% ----------------------------------------------------
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% ----------------------------------------------------
+% 2. ÍNDICE
+% ----------------------------------------------------
+\begin{frame}{Índice de Contenidos}
+    \tableofcontents
+\end{frame}
+
+% ----------------------------------------------------
+% 3. MODELADO DE BASE DE DATOS
+% ----------------------------------------------------
+\section{SQL}
+\subsection{Modelado de Base de Datos}
+    \begin{frame}{¿Cuál es el objetivo?}
+        El objetivo de esta estructura es relacionar las entidades para normalizar la base de datos y optimizar el almacenamiento.\bigskip
+
+        La tabla \textbf{albumes} funciona como la entidad principal del catálogo. Para evitar duplicidad de información, los registros no se insertan en un único bloque; primero se registran las entidades independientes y posteriormente se vinculan a través de tablas relacionales intermedias.\bigskip
+
+        Gracias a esto, un artista puede tener varios álbumes, un álbum puede reunir varias canciones y una canción puede pertenecer a más de un lanzamiento, evitando en todo momento la redundancia de datos.
+    \end{frame}% =====================================================
+%                      ENTIDADES
+% =====================================================
+\subsection{Entidades/Tablas principales}
+\begin{frame}[t]{Entidades}
+    \centering
+    \footnotesize
+    \setlength{\tabcolsep}{3pt}
+    \renewcommand{\arraystretch}{0.95}
+
+    \begin{columns}[T]
+        % ---------------- COLUMNA 1 ----------------
+        \begin{column}{0.32\textwidth}
+            \centering
+            \textbf{\texttt{usuarios}}\par\vspace{0.05cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{Campo} & \textbf{Tipo} \\
+                \midrule
+                \texttt{id\_usuario} & INT (PK) \\
+                \texttt{username} & VARCHAR(50) \\
+                \texttt{password\_hash} & VARCHAR(255) \\
+                \texttt{created\_at} & TIMESTAMP \\
+                \bottomrule
+            \end{tabular}
+
+            \vspace{0.25cm}
+            \textbf{\texttt{artistas}}\par\vspace{0.05cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{Campo} & \textbf{Tipo} \\
+                \midrule
+                \texttt{id\_artista} & INT (PK) \\
+                \texttt{nombre} & VARCHAR(150) \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+
+        % ---------------- COLUMNA 2 ----------------
+        \begin{column}{0.32\textwidth}
+            \centering
+            \textbf{\texttt{albumes}}\par\vspace{0.05cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{Campo} & \textbf{Tipo} \\
+                \midrule
+                \texttt{id\_album} & INT (PK) \\
+                \texttt{titulo} & VARCHAR(150) \\
+                \texttt{descripcion} & TEXT \\
+                \texttt{anio\_lanzamiento} & YEAR \\
+                \texttt{portada\_ruta} & VARCHAR(255) \\
+                \bottomrule
+            \end{tabular}
+
+            \vspace{0.25cm}
+            \textbf{\texttt{notas}}\par\vspace{0.05cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{Campo} & \textbf{Tipo} \\
+                \midrule
+                \texttt{id\_nota} & INT (PK) \\
+                \texttt{contenido} & TEXT \\
+                \texttt{fecha} & TIMESTAMP \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+
+        % ---------------- COLUMNA 3 ----------------
+        \begin{column}{0.32\textwidth}
+            \centering
+            \textbf{\texttt{canciones}}\par\vspace{0.05cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{Campo} & \textbf{Tipo} \\
+                \midrule
+                \texttt{id\_cancion} & INT (PK) \\
+                \texttt{titulo} & VARCHAR(150) \\
+                \texttt{duracion\_segundos} & INT \\
+                \texttt{ruta\_archivo} & VARCHAR(255) \\
+                \bottomrule
+            \end{tabular}
+
+            \vspace{0.25cm}
+            \textbf{\texttt{playlists}}\par\vspace{0.05cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{Campo} & \textbf{Tipo} \\
+                \midrule
+                \texttt{id\_playlist} & INT (PK) \\
+                \texttt{nombre} & VARCHAR(100) \\
+                \texttt{descripcion} & TEXT \\
+                \texttt{created\_at} & TIMESTAMP \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+    \end{columns}
+    \vspace{0.5cm}
+    \begin{enumerate}
+        \item TIMESTAMP: es un tipo de dato que registra el instante exacto (fecha y hora) en que ocurre un evento, como la creación o modificación de un registro
+        \item PK: Llave primaria (Primary Key)
+    \end{enumerate}
+\end{frame}
+
+
+% =====================================================
+%                      RELACIONES
+% =====================================================
+\subsection{Relaciones}
+\begin{frame}[t]{Relaciones}
+    \centering
+    \footnotesize
+    \setlength{\tabcolsep}{3pt}
+    \renewcommand{\arraystretch}{0.95}
+
+    \begin{columns}[T]
+        % ---------------- COLUMNA 1 ----------------
+        \begin{column}{0.32\textwidth}
+            \centering
+            \textbf{\texttt{rel\_tracks\_album}}\par\vspace{0.05cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{Campo} & \textbf{Tipo} \\
+                \midrule
+                \texttt{id\_album} & INT (PK) \\
+                \texttt{id\_cancion} & INT (PK) \\
+                \texttt{numero\_pista} & INT \\
+                \bottomrule
+            \end{tabular}
+
+            \vspace{0.25cm}
+            \textbf{\texttt{rel\_art\_track}}\par\vspace{0.05cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{Campo} & \textbf{Tipo} \\
+                \midrule
+                \texttt{id\_artista} & INT (PK) \\
+                \texttt{id\_cancion} & INT (PK) \\
+                \texttt{rol} & VARCHAR(50) \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+
+        % ---------------- COLUMNA 2 ----------------
+        \begin{column}{0.32\textwidth}
+            \centering
+            \textbf{\texttt{rel\_tracks\_playlist}}\par\vspace{0.05cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{Campo} & \textbf{Tipo} \\
+                \midrule
+                \texttt{id\_playlist} & INT (PK) \\
+                \texttt{id\_cancion} & INT (PK) \\
+                \texttt{posicion} & INT \\
+                \texttt{agregado\_en} & TIMESTAMP \\
+                \bottomrule
+            \end{tabular}
+
+            \vspace{0.25cm}
+            \textbf{\texttt{rel\_art\_album}}\par\vspace{0.05cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{Campo} & \textbf{Tipo} \\
+                \midrule
+                \texttt{id\_artista} & INT (PK) \\
+                \texttt{id\_album} & INT (PK) \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+
+        % ---------------- COLUMNA 3 ----------------
+        \begin{column}{0.32\textwidth}
+            \centering
+            \textbf{\texttt{rel\_user\_playlist}}\par\vspace{0.05cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{Campo} & \textbf{Tipo} \\
+                \midrule
+                \texttt{id\_usuario} & INT (PK) \\
+                \texttt{id\_playlist} & INT (PK) \\
+                \texttt{es\_propietario} & BOOLEAN \\
+                \bottomrule
+            \end{tabular}
+
+            \vspace{0.25cm}
+            \textbf{\texttt{rel\_notes\_album}}\par\vspace{0.05cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{Campo} & \textbf{Tipo} \\
+                \midrule
+                \texttt{id\_nota} & INT (PK) \\
+                \texttt{id\_album} & INT (PK) \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+    \end{columns}
+    \begin{enumerate}
+        \item BOOLEAN: es un tipo de dato que solo puede almacenar dos valores lógicos: verdadero (TRUE) o falso (FALSE)
+    \end{enumerate}
+\end{frame}
+\subsection{Modelo de relación}
+% =====================================================
+%             EXPLICACIÓN DE LAS RELACIONES
+% =====================================================
+\begin{frame}[t]{Explicación de las Relaciones}
+    \small
+    \begin{itemize}
+        \setlength{\itemsep}{6pt}
+
+        \item \textbf{\texttt{rel\_tracks\_album}}: relaciona el
+        \texttt{id\_cancion} con el \texttt{id\_album}, indicando
+        además el número de pista (\texttt{numero\_pista}) de la
+        canción dentro del álbum.
+
+        \item \textbf{\texttt{rel\_tracks\_playlist}}: relaciona el
+        \texttt{id\_cancion} con el \texttt{id\_playlist}, guardando
+        su \texttt{posicion} en la lista y cuándo se agregó
+        (\texttt{agregado\_en}).
+
+        \item \textbf{\texttt{rel\_art\_track}}: relaciona el
+        \texttt{id\_artista} con el \texttt{id\_cancion}, y el campo
+        \texttt{rol} indica su participación (por ejemplo, intérprete
+        o compositor).
+
+        \item \textbf{\texttt{rel\_art\_album}}: relaciona el
+        \texttt{id\_artista} con el \texttt{id\_album}, es decir,
+        qué artistas pertenecen a cada álbum.
+
+        \item \textbf{\texttt{rel\_notes\_album}}: relaciona el
+        \texttt{id\_nota} con el \texttt{id\_album}, permitiendo
+        asociar notas a un álbum.
+
+        \item \textbf{\texttt{rel\_user\_playlist}}: relaciona el
+        \texttt{id\_usuario} con el \texttt{id\_playlist}, y
+        \texttt{es\_propietario} indica si el usuario es dueño de la
+        playlist.
+    \end{itemize}
+\end{frame}
+\subsection{Ejemplo}
+% =====================================================
+%                 EJEMPLO DE REGISTROS
+% =====================================================
+% =====================================================
+%                 EJEMPLO DE REGISTROS
+% =====================================================
+\begin{frame}[t]{Ejemplo: ¿cómo se relacionan los registros?}
+    \centering
+    \footnotesize
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{1.0}
+
+    % ---------- FILA 1: ENTIDADES ----------
+    \begin{columns}[T]
+        \begin{column}{0.22\textwidth}
+            \centering
+            \textbf{\texttt{artistas}}\par\vspace{0.1cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{id\_artista} & \textbf{nombre} \\
+                \midrule
+                1 & Daft Punk \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+
+        \begin{column}{0.36\textwidth}
+            \centering
+            \textbf{\texttt{albumes}}\par\vspace{0.1cm}
+            \begin{tabular}{lll}
+                \toprule
+                \textbf{id\_album} & \textbf{titulo} & \textbf{anio} \\
+                \midrule
+                10 & Discovery & 2001 \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+
+        \begin{column}{0.40\textwidth}
+            \centering
+            \textbf{\texttt{canciones}}\par\vspace{0.1cm}
+            \begin{tabular}{lll}
+                \toprule
+                \textbf{id\_cancion} & \textbf{titulo} & \textbf{duracion} \\
+                \midrule
+                100 & One More Time & 320 \\
+                101 & Digital Love  & 298 \\
+                \bottomrule
+            \end{tabular}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.4cm}
+    {\small $\Downarrow$ \textit{las tablas de relación los conectan con el álbum} $\Downarrow$}
+    \vspace{0.4cm}
+
+    % ---------- FILA 2: RELACIONES ----------
+    \begin{columns}[T]
+        \begin{column}{0.36\textwidth}
+            \centering
+            \textbf{\texttt{rel\_art\_album}}\par\vspace{0.1cm}
+            \begin{tabular}{ll}
+                \toprule
+                \textbf{id\_artista} & \textbf{id\_album} \\
+                \midrule
+                1 & 10 \\
+                \bottomrule
+            \end{tabular}
+
+            \vspace{0.15cm}
+            \textit{Daft Punk $\rightarrow$ Discovery}
+        \end{column}
+
+        \begin{column}{0.56\textwidth}
+            \centering
+            \textbf{\texttt{rel\_tracks\_album}}\par\vspace{0.1cm}
+            \begin{tabular}{lll}
+                \toprule
+                \textbf{id\_album} & \textbf{id\_cancion} & \textbf{numero\_pista} \\
+                \midrule
+                10 & 100 & 1 \\
+                10 & 101 & 2 \\
+                \bottomrule
+            \end{tabular}
+
+            \vspace{0.15cm}
+            \textit{One More Time y Digital Love $\rightarrow$ Discovery}
+        \end{column}
+    \end{columns}
+\end{frame}
+% =====================================================
+%            RESULTADO FINAL: UNIENDO LAS TABLAS
+% =====================================================
+\begin{frame}[t,fragile]{El álbum completo: uniendo tablas}
+    \centering
+    \footnotesize
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{1.0}
+
+    \begin{block}{¿Está incompleta la información del álbum?}
+        \footnotesize
+        No: así \textbf{optimizamos espacio}. Cada dato se guarda una sola
+        vez en su tabla, y al consultarlo \textbf{unimos columnas de
+        distintas tablas} para reconstruir el registro completo.
+    \end{block}
+
+    \vspace{0.2cm}
+    \textbf{Resultado final (después de la consulta SQL)}\par\vspace{0.1cm}
+    \begin{tabular}{lllll}
+        \toprule
+        \textbf{album} & \textbf{artista} & \textbf{anio} &
+        \textbf{pista} & \textbf{cancion} \\
+        \midrule
+        Discovery & Daft Punk & 2001 & 1 & One More Time \\
+        Discovery & Daft Punk & 2001 & 2 & Digital Love  \\
+        \bottomrule
+    \end{tabular}
+
+    \vspace{0.3cm}
+    \begin{columns}[T]
+        \begin{column}{0.52\textwidth}
+            \textbf{Consulta SQL}
+            \begin{lstlisting}[language=SQL,basicstyle=\ttfamily\tiny]
+                SELECT al.titulo, ar.nombre,
+                       al.anio_lanzamiento,
+                       rt.numero_pista, c.titulo
+                FROM albumes al
+                JOIN rel_art_album ra
+                     ON ra.id_album = al.id_album
+                JOIN artistas ar
+                     ON ar.id_artista = ra.id_artista
+                JOIN rel_tracks_album rt
+                     ON rt.id_album = al.id_album
+                JOIN canciones c
+                     ON c.id_cancion = rt.id_cancion
+                WHERE al.id_album = 10;
+            \end{lstlisting}
+        \end{column}
+
+        \begin{column}{0.44\textwidth}
+            \textbf{En lenguaje natural}
+            \begin{itemize}
+                \setlength{\itemsep}{2pt}
+                \item Toma las columnas \texttt{titulo}, \texttt{nombre},
+                \texttt{anio\_lanzamiento}, \texttt{numero\_pista} y
+                \texttt{titulo} de las tablas \texttt{albumes},
+                \texttt{artistas}, \texttt{rel\_tracks\_album} y
+                \texttt{canciones}.
+                \item Únelas usando las tablas de relación
+                (\texttt{rel\_art\_album} y \texttt{rel\_tracks\_album}).
+                \item Donde el \texttt{id\_album} sea igual a \texttt{10}.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+\section{Python}
+\begin{frame}{Integración con Python}
+    \centering
+    \vfill
+    {\Huge \textbf{Código en Python}}\par\vspace{0.4cm}
+    {\Huge Funciones explicadas}
+    \vfill
+\end{frame}
+\subsection{Archivos}
+\begin{frame}{Archivos}
+El proyecto se dividio en 3 archivos \textbf{Python:}
+\begin{enumerate}
+    \item funciones.py \par
+            Las funciones que constantemente usaremos en el programa
+    \item conexion.py\par
+            La conexión con la base de datos.
+    \item main.py\par
+            El codigo donde integramos todo.
+\end{enumerate}
+\end{frame}
+\subsection{Recursos: Libreria mysql.connector}
+\begin{frame}[t]{Librería \texttt{mysql.connector}}
+    \small
+    \centering
+    \footnotesize
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{1.0}
+
+    \begin{block}{¿Qué es?}
+        \footnotesize
+        Librería oficial de MySQL para que Python pueda
+        conectarse a la base de datos, ejecutar consultas SQL y recibir los
+        resultados.
+    \end{block}
+    
+
+    \vspace{0.3cm}
+    \textbf{Funciones que usamos:}
+    \vspace{0.1cm}
+
+    \begin{center}
+        \footnotesize
+        \renewcommand{\arraystretch}{1.15}
+        \begin{tabular}{p{0.32\textwidth} p{0.60\textwidth}}
+            \toprule
+            \textbf{Función} & \textbf{Explicación} \\
+            \midrule
+            \texttt{mysql.connector.connect()} &
+            Abre la conexión con la base de datos. La usamos dentro de
+            \texttt{connect\_to\_database()} (archivo \texttt{conexion.py}). \\
+
+            \texttt{cnx.cursor()} &
+            Crea el cursor, el objeto que envía las instrucciones SQL. \\
+
+            \texttt{cursor.execute(sql, valores)} &
+            Ejecuta una consulta. Los \texttt{\%s} se sustituyen por los
+            valores, lo que evita inyección SQL. \\
+
+            \texttt{cursor.fetchone()} &
+            Devuelve una sola fila (en \texttt{verify\_user}). \\
+
+            \texttt{cursor.fetchall()} &
+            Devuelve todas las filas (en las funciones \texttt{show\_*}). \\
+
+            \texttt{cursor.lastrowid} &
+            Entrega el ID del último registro insertado. (esto es un atributo, no una función)\\
+
+            \texttt{cnx.commit()} &
+            Guarda los cambios de \texttt{INSERT} de forma permanente. \\
+
+            \texttt{cnx.rollback()} &
+            Deshace los cambios si algo falla (en \texttt{add\_playlist}). \\
+
+            \texttt{cursor.close()}, \texttt{cnx.close()} &
+            Cierran el cursor y la conexión en el bloque \texttt{finally}. \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+\end{frame}
+\end{document}
