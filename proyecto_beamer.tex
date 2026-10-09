@@ -13,31 +13,47 @@
 \usepackage{tikz}
 \usepackage{booktabs}
 
-% --- Configuración para Listados de Código ---
+% --- Configuración para Listados de Código con soporte UTF-8 ---
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.96,0.96,0.97}
 
 \lstdefinestyle{mystyle}{
-    backgroundcolor=\color{backcolour},   
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{blue}\bfseries,
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\scriptsize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2,
-    frame=lines,
-    rulecolor=\color{black!20}
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{blue}\bfseries,
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\scriptsize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2,
+	frame=lines,
+	rulecolor=\color{black!20},
+	extendedchars=true,
+	literate=
+	{á}{{\'a}}1
+	{é}{{\'e}}1
+	{í}{{\'i}}1
+	{ó}{{\'o}}1
+	{ú}{{\'u}}1
+	{Á}{{\'A}}1
+	{É}{{\'E}}1
+	{Í}{{\'I}}1
+	{Ó}{{\'O}}1
+	{Ú}{{\'U}}1
+	{ñ}{{\~n}}1
+	{Ñ}{{\~N}}1
+	{¡}{{!`}}1
+	{¿}{{?`}}1
 }
 \lstset{style=mystyle}
 
@@ -544,5 +560,235 @@ El proyecto se dividio en 3 archivos \textbf{Python:}
             \bottomrule
         \end{tabular}
     \end{center}
+\end{frame}
+
+% =====================================================
+%                SECCIÓN: PYTHON Y MÓDULOS
+% =====================================================
+\section{Python}
+
+\begin{frame}{Integración con Python}
+	\centering
+	\vfill
+	{\Huge \textbf{Código en Python}}\par\vspace{0.4cm}
+	{\Huge Funciones explicadas}
+	\vfill
+\end{frame}
+
+\subsection{Archivos del Proyecto}
+\begin{frame}{Archivos del Proyecto}
+	El proyecto se dividió en 3 archivos principales de \textbf{Python}:
+	\vspace{0.3cm}
+	\begin{enumerate}
+		\setlength{\itemsep}{8pt}
+		\item \texttt{conexion.py}\par
+		Establece y gestiona la conexión con la base de datos MySQL.
+		\item \texttt{funciones.py}\par
+		Contiene las funciones modulares para operaciones CRUD y lógica del negocio.
+		\item \texttt{main.py}\par
+		Integración del flujo principal y menú de usuario.
+	\end{enumerate}
+\end{frame}
+
+% =====================================================
+%                MÓDULO: CONEXION.PY
+% =====================================================
+\subsection{Conexión a la Base de Datos}
+
+\begin{frame}[t]{Consultas y Reportes de Datos}
+	\small
+	\begin{block}{\texttt{show\_artists()}, \texttt{show\_tracks()}, \texttt{show\_playlists()}}
+		\begin{itemize}
+			\item \textbf{Propósito:} Recuperan registros formateados usando \texttt{cursor.fetchall()}.
+			\item \textbf{Formato especial:} Convierte la duración de las canciones a minutos (\texttt{duracion // 60}).
+		\end{itemize}
+	\end{block}
+	
+	\begin{block}{\texttt{show\_albums()}}
+		\begin{itemize}
+			\item \textbf{Propósito:} Muestra una vista jerárquica del catálogo agrupando canciones.
+			\item \textbf{SQL Avanzado:} Emplea \texttt{LEFT JOIN} entre \texttt{albumes}, \texttt{rel\_tracks\_album} y \texttt{canciones}.
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Código Fuente: \texttt{conexion.py}}
+	\begin{lstlisting}[language=Python]
+		import mysql.connector
+		from mysql.connector import Error
+		
+		def connect_to_database():
+		try:
+		cnx = mysql.connector.connect(
+		host="localhost",
+		user="root",
+		password="joshwbe",
+		database="music_manager", 
+		port=3306
+		)
+		if cnx.is_connected():
+		print("Conexion exitosa a la base de datos music_manager!")
+		return cnx
+		except Error as error:
+		print(f"Error al conectar con MySQL: {error}")
+		return None
+	\end{lstlisting}
+\end{frame}
+
+% =====================================================
+%                MÓDULO: FUNCIONES.PY
+% =====================================================
+\subsection{Funciones de la Aplicación}
+
+\begin{frame}[t]{Gestión de Usuarios}
+	\small
+	\begin{block}{\texttt{add\_user(username, password\_hash)}}
+		\begin{itemize}
+			\item \textbf{Propósito:} Registra un nuevo usuario en la base de datos.
+			\item \textbf{Funcionamiento:} Ejecuta la instrucción \texttt{INSERT INTO usuarios} y confirma los cambios con \texttt{cnx.commit()}.
+		\end{itemize}
+	\end{block}
+	
+	\begin{block}{\texttt{verify\_user(username, password\_hash)}}
+		\begin{itemize}
+			\item \textbf{Propósito:} Autentica las credenciales de un usuario.
+			\item \textbf{Funcionamiento:} Utiliza \texttt{SELECT id\_usuario}. Si existe coincidencia, retorna el ID del usuario con \texttt{cursor.fetchone()}; de lo contrario, devuelve \texttt{None}.
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t]{Artistas, Álbumes y Canciones}
+	\small
+	\begin{block}{\texttt{add\_artist(nombre)}}
+		\begin{itemize}
+			\item \textbf{Propósito:} Inserta un nuevo registro en la tabla \texttt{artistas}.
+		\end{itemize}
+	\end{block}
+	
+	\begin{block}{\texttt{add\_album(titulo, descripcion, anio\_lanzamiento, portada\_ruta)}}
+		\begin{itemize}
+			\item \textbf{Propósito:} Registra un álbum y utiliza \texttt{cursor.lastrowid} para obtener y retornar el ID generado.
+		\end{itemize}
+	\end{block}
+	
+	\begin{block}{\texttt{add\_track(titulo, duracion\_segundos, ruta\_archivo)}}
+		\begin{itemize}
+			\item \textbf{Propósito:} Inserta una pista en la tabla \texttt{canciones} y devuelve su ID único (\texttt{id\_cancion}).
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t]{Relaciones y Playlists}
+	\small
+	\begin{block}{\texttt{link\_track\_to\_album(id\_album, id\_cancion, numero\_pista)}}
+		\begin{itemize}
+			\item \textbf{Propósito:} Asocia una canción a un álbum guardando su número de pista en la tabla intermedia \texttt{rel\_tracks\_album}.
+		\end{itemize}
+	\end{block}
+	
+	\begin{block}{\texttt{add\_playlist(nombre, id\_usuario, descripcion)}}
+		\begin{itemize}
+			\item \textbf{Propósito:} Crea una lista de reproducción e inserta la relación de propiedad en \texttt{rel\_user\_playlist}.
+			\item \textbf{Transacción segura:} Aplica \texttt{cnx.rollback()} en el bloque \texttt{except} para desestimar cambios si alguna consulta falla.
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t]{Consultas y Reportes de Datos}
+	\small
+	\begin{block}{\texttt{show\_artists()}, \texttt{show\_tracks()}, \texttt{show\_playlists()}}
+		\begin{itemize}
+			\item \textbf{Propósito:} Recuperan registros formateados usando \texttt{cursor.fetchall()}.
+			\item \textbf{Formato especial:} Convierte la duración de las canciones a minutos (\texttt{duracion // 60}).
+		\end{itemize}
+	\end{block}
+	
+	\begin{block}{\texttt{show\_albums()}}
+		\begin{itemize}
+			\item \textbf{Propósito:} Muestra una vista jerárquica del catálogo agrupando canciones.
+			\item \textbf{SQL Avanzado:} Emplea \texttt{LEFT JOIN} entre \texttt{albumes}, \texttt{rel\_tracks\_album} y \texttt{canciones}.
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[t]{Patrón de Diseño de las Funciones}
+	\small
+	Todas las funciones desarrolladas en \texttt{funciones.py} siguen un patrón de arquitectura constante:
+	\vspace{0.15cm}
+	\begin{enumerate}
+		\setlength{\itemsep}{3pt}
+		\item \textbf{Obtención de conexión:} Invocación a \texttt{connect\_to\_database()}.
+		\item \textbf{Manejo de excepciones:} Estructura \texttt{try-except-finally}.
+		\item \textbf{Seguridad SQL:} Consultas con marcadores \texttt{\%s} para evitar inyección SQL.
+		\item \textbf{Liberación de recursos:} Cierre explícito mediante \texttt{cursor.close()} y \texttt{cnx.close()} en \texttt{finally}.
+	\end{enumerate}
+\end{frame}
+
+% =====================================================
+%                MÓDULO: MAIN.PY
+% =====================================================
+\subsection{Controlador Principal (main.py)}
+
+\begin{frame}[t]{Estructura del Archivo \texttt{main.py}}
+	\small
+	\begin{block}{Propósito General}
+		Actúa como el punto de entrada de la aplicación, gestionando la interfaz de consola, la autenticación y la navegación mediante menús interactivos.
+	\end{block}
+	
+	\vspace{0.15cm}
+	\begin{columns}[T]
+		\begin{column}{0.48\textwidth}
+			\textbf{Funciones de Utilidad:}
+			\begin{itemize}
+				\setlength{\itemsep}{2pt}
+				\item \texttt{limpiar\_pantalla()}: Ejecuta \texttt{cls} (Windows) o \texttt{clear} (Unix) usando el módulo \texttt{os}.
+				\item \texttt{mostrar\_encabezado()}: Imprime la cabecera visual del sistema.
+			\end{itemize}
+		\end{column}
+		
+		\begin{column}{0.48\textwidth}
+			\textbf{Integración de Módulos:}
+			\begin{itemize}
+				\setlength{\itemsep}{2pt}
+				\item Importa todas las funciones de operaciones desde \texttt{funciones.py}.
+				\item Utiliza \texttt{time.sleep()} para mejorar la experiencia de usuario.
+			\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}[t]{Flujo de Control: Autenticación y Navegación}
+	\small
+	\begin{block}{\texttt{main()} - Pantalla de Acceso}
+		\begin{itemize}
+			\item Controla el inicio de sesión con \texttt{verify\_user()} y el registro con \texttt{add\_user()}.
+			\item Si las credenciales son válidas, concede acceso enviando el ID del usuario a \texttt{menu\_principal()}.
+		\end{itemize}
+	\end{block}
+	
+	\begin{block}{\texttt{menu\_principal()} - Gestión Interactiva}
+		\begin{itemize}
+			\item Ofrece un menú numérico (opciones 0 a 9) para ejecutar las operaciones del sistema.
+			\item Sanitiza las entradas del usuario (ej. conversión de texto a \texttt{int} para la duración de canciones e IDs).
+			\item Maneja excepciones con \texttt{try-except ValueError} para evitar caídas del programa ante datos incorrectos.
+		\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Código Fuente: Inicialización (\texttt{main.py})}
+	\begin{lstlisting}[language=Python]
+		import os
+		import time
+		from funciones import (add_artist, add_user, add_album, add_track, 
+		add_playlist, link_track_to_album, verify_user, 
+		show_albums, show_artists, show_tracks, show_playlists)
+		
+		def limpiar_pantalla():
+		os.system('cls' if os.name == 'nt' else 'clear')
+		
+		if __name__ == '__main__':
+		# Punto de entrada de la aplicacion
+		main()
+	\end{lstlisting}
 \end{frame}
 \end{document}
