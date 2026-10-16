@@ -1,0 +1,626 @@
+\documentclass[11pt]{article}
+
+% ===== Paquetes =====
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{titling}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% ===== Paleta de color (azul grafito, sobrio) =====
+\definecolor{tinta}{HTML}{1F2A44}
+\definecolor{grisclaro}{HTML}{6B7280}
+\definecolor{acento}{HTML}{750946}  
+% Colores pastel
+\definecolor{codebg}{RGB}{245,245,245}       % Gris muy suave
+\definecolor{codecomment}{RGB}{120,150,120}  % Verde pastel
+\definecolor{codekeyword}{RGB}{120,130,180}  % Azul/lila pastel
+\definecolor{codestring}{RGB}{190,130,140}   % Rosa pastel
+\definecolor{codenumber}{RGB}{150,150,150}   % Gris
+\definecolor{codeidentifier}{RGB}{100,140,160} % Azul grisáceo
+
+\lstdefinestyle{pythonstyle}{
+    language=Python,
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{codekeyword},
+    commentstyle=\color{codecomment},
+    stringstyle=\color{codestring},
+    identifierstyle=\color{codeidentifier},
+    numberstyle=\tiny\color{codenumber},
+    numbers=left,
+    numbersep=10pt,
+    frame=single,
+    rulecolor=\color{gray!30},
+    framerule=0.5pt,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    columns=fullflexible
+}
+\lstdefinestyle{sqlstyle}{
+    language=SQL,
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{codekeyword},
+    commentstyle=\color{codecomment},
+    stringstyle=\color{codestring},
+    identifierstyle=\color{codeidentifier},
+    numberstyle=\tiny\color{codenumber},
+    numbers=left,
+    numbersep=10pt,
+    frame=single,
+    rulecolor=\color{gray!30},
+    framerule=0.5pt,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    columns=fullflexible
+}
+
+
+% ============================================
+%   DATOS PERSONALES Y TÍTULO — EDITA AQUÍ
+% ============================================
+\newcommand{\miTitulo}{Documentación para equipo}
+\newcommand{\miNombre}{Luis Joshua Rodriguez Urbano}
+\newcommand{\miBoleta}{2026600631}
+\newcommand{\miMateria}{Construcción Matemática}
+\newcommand{\miProfesor}{Juan Manuel Figueroa Flores}
+\newcommand{\miActividad}{Documentación de proyecto. }
+\newcommand{\miFecha}{\today}
+% ============================================
+
+% ===== Encabezado y pie de página =====
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{tinta}\leaders\hrule height \headrulewidth\hfill}}
+\lhead{\small\color{acento}\miMateria}
+\rhead{\small\color{acento} \miTitulo}
+\cfoot{\small\color{acento}\thepage}
+
+% ===== Estilo de títulos de sección =====
+\titleformat{\section}
+  {\normalfont\large\bfseries\color{tinta}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries\color{tinta}}{\thesubsection.}{0.5em}{}
+
+\begin{document}
+
+% ===== Encabezado de la tarea (dos columnas) =====
+\noindent
+\begin{minipage}[c]{0.55\textwidth}
+    {\LARGE\bfseries\color{acento} \miActividad} \\[0.5em]
+    {\large\color{grisclaro} \miMateria} \\[0.7em]
+    {\Large\bfseries\color{tinta} \miTitulo}
+\end{minipage}%
+\hfill
+\begin{minipage}[c]{0.4\textwidth}
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{r l}
+        \bfseries\color{tinta} \small Nombre: & \small \miNombre \\
+        \bfseries\color{tinta} \small Boleta: & \small \miBoleta \\
+        \bfseries\color{tinta} \small Profesor(a): & \small \miProfesor \\
+        \bfseries\color{tinta} \small Fecha: & \small \miFecha \\
+    \end{tabular}
+\end{minipage}
+
+\vspace{0.6em}
+\noindent
+\begin{tikzpicture}
+    \draw[tinta, line width=0.6pt] (0,0) -- (\textwidth,0);
+\end{tikzpicture}
+
+
+\vspace{1.5cm}
+
+% ============================================
+%   AQUÍ EMPIEZA EL CONTENIDO DE LA TAREA
+% ============================================
+
+\section{Introducción}
+\section{Tablas Entidades (Maestras)}
+
+\subsection{Tabla: usuarios}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE IF NOT EXISTS usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+\end{lstlisting}
+
+\noindent\textbf{¿Por qué se creó cada columna?}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \texttt{id\_usuario}: Identificador único para cada cuenta registrada en el sistema.
+    \item \texttt{username}: Nombre visible y único para permitir el inicio de sesión del usuario.
+    \item \texttt{password\_hash}: Almacenamiento de la contraseña encriptada por seguridad.
+    \item \texttt{created\_at}: Registro automático del momento exacto en que se creó la cuenta.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Referenciaciones} \\[0.3em]
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Tabla Origen} & \textbf{Tabla Destino} \\
+\hline
+usuarios & rel\_user\_playlist \\
+id\_usuario & id\_usuario \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\subsection{Tabla: artistas}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE IF NOT EXISTS artistas (
+    id_artista INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(150) NOT NULL
+) ENGINE=InnoDB;
+\end{lstlisting}
+
+\noindent\textbf{¿Por qué se creó cada columna?}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \texttt{id\_artista}: Identificador único de cada músico, intérprete o banda.
+    \item \texttt{nombre}: Nombre artístico o comercial bajo el que se publican las obras musicales.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Referenciaciones} \\[0.3em]
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Tabla Origen} & \textbf{Tabla Destino} \\
+\hline
+artistas & rel\_art\_album \\
+id\_artista & id\_artista \\
+\hline
+artistas & rel\_art\_track \\
+id\_artista & id\_artista \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\subsection{Tabla: albumes}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE IF NOT EXISTS albumes (
+    id_album INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(150) NOT NULL,
+    descripcion TEXT NULL,
+    anio_lanzamiento YEAR NULL,
+    portada_ruta VARCHAR(255) NULL
+) ENGINE=InnoDB;
+\end{lstlisting}
+
+\noindent\textbf{¿Por qué se creó cada columna?}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \texttt{id\_album}: Identificador único para cada disco o recopilación.
+    \item \texttt{titulo}: Nombre comercial del álbum.
+    \item \texttt{descripcion}: Espacio para información editorial o contexto del trabajo discográfico.
+    \item \texttt{anio\_lanzamiento}: Año en el que la obra fue publicada oficialmente.
+    \item \texttt{portada\_ruta}: Ubicación en el disco duro o URL para cargar la imagen de la carátula.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Referenciaciones} \\[0.3em]
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Tabla Origen} & \textbf{Tabla Destino} \\
+\hline
+albumes & rel\_tracks\_album \\
+id\_album & id\_album \\
+\hline
+albumes & rel\_art\_album \\
+id\_album & id\_album \\
+\hline
+albumes & rel\_notes\_album \\
+id\_album & id\_album \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\subsection{Tabla: canciones}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE IF NOT EXISTS canciones (
+    id_cancion INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(150) NOT NULL,
+    duracion_segundos INT NOT NULL DEFAULT 0,
+    ruta_archivo VARCHAR(255) NULL
+) ENGINE=InnoDB;
+\end{lstlisting}
+
+\noindent\textbf{¿Por qué se creó cada columna?}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \texttt{id\_cancion}: Identificador único para cada pista de audio.
+    \item \texttt{titulo}: Nombre de la obra musical.
+    \item \texttt{duracion\_segundos}: Tiempo total de reproducción para mostrar en la interfaz.
+    \item \texttt{ruta\_archivo}: Ruta exacta en el sistema de archivos para que Python pueda reproducir el MP3/FLAC.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Referenciaciones} \\[0.3em]
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Tabla Origen} & \textbf{Tabla Destino} \\
+\hline
+canciones & rel\_tracks\_album \\
+id\_cancion & id\_cancion \\
+\hline
+canciones & rel\_tracks\_playlist \\
+id\_cancion & id\_cancion \\
+\hline
+canciones & rel\_art\_track \\
+id\_cancion & id\_cancion \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\subsection{Tabla: playlists}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE IF NOT EXISTS playlists (
+    id_playlist INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+\end{lstlisting}
+
+\noindent\textbf{¿Por qué se creó cada columna?}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \texttt{id\_playlist}: Identificador único de la lista de reproducción.
+    \item \texttt{nombre}: Título personalizado asignado a la colección.
+    \item \texttt{descripcion}: Resumen o temática de la lista creada por el usuario.
+    \item \texttt{created\_at}: Registro de la fecha y hora de creación de la lista.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Referenciaciones} \\[0.3em]
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Tabla Origen} & \textbf{Tabla Destino} \\
+\hline
+playlists & rel\_tracks\_playlist \\
+id\_playlist & id\_playlist \\
+\hline
+playlists & rel\_user\_playlist \\
+id\_playlist & id\_playlist \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\subsection{Tabla: notas}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE IF NOT EXISTS notas (
+    id_nota INT AUTO_INCREMENT PRIMARY KEY,
+    contenido TEXT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+\end{lstlisting}
+
+\noindent\textbf{¿Por qué se creó cada columna?}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \texttt{id\_nota}: Identificador único para el comentario o apunte.
+    \item \texttt{contenido}: El texto íntegro con el análisis, reseña o impresión personal.
+    \item \texttt{fecha}: Momento cronológico exacto en que se guardó la nota.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Referenciaciones} \\[0.3em]
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Tabla Origen} & \textbf{Tabla Destino} \\
+\hline
+notas & rel\_notes\_album \\
+id\_nota & id\_nota \\
+\hline
+\end{tabular}
+
+\vspace{0.8cm}
+
+\section{Tablas Intermedias (Relaciones)}
+
+\subsection{Tabla: rel\_tracks\_album}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE IF NOT EXISTS rel_tracks_album (
+    id_album INT NOT NULL,
+    id_cancion INT NOT NULL,
+    numero_pista INT NULL,
+    PRIMARY KEY (id_album, id_cancion)
+) ENGINE=InnoDB;
+\end{lstlisting}
+
+\noindent\textbf{¿Por qué se creó cada columna?}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \texttt{id\_album}: Referencia lógica al álbum contenedor.
+    \item \texttt{id\_cancion}: Referencia lógica a la canción incluida en el disco.
+    \item \texttt{numero\_pista}: Orden numérico que ocupa la pista dentro del álbum.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Referenciaciones} \\[0.3em]
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Tabla Origen} & \textbf{Tabla Destino} \\
+\hline
+rel\_tracks\_album & albumes \\
+id\_album & id\_album \\
+\hline
+rel\_tracks\_album & canciones \\
+id\_cancion & id\_cancion \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\subsection{Tabla: rel\_tracks\_playlist}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE IF NOT EXISTS rel_tracks_playlist (
+    id_playlist INT NOT NULL,
+    id_cancion INT NOT NULL,
+    posicion INT NULL,
+    agregado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_playlist, id_cancion)
+) ENGINE=InnoDB;
+\end{lstlisting}
+
+\noindent\textbf{¿Por qué se creó cada columna?}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \texttt{id\_playlist}: Referencia a la lista de reproducción receptora.
+    \item \texttt{id\_cancion}: Referencia a la canción añadida.
+    \item \texttt{posicion}: Turno de reproducción que tiene la canción dentro de la lista para mantener un orden.
+    \item \texttt{agregado\_en}: Auditoría del instante en que el usuario añadió la canción.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Referenciaciones} \\[0.3em]
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Tabla Origen} & \textbf{Tabla Destino} \\
+\hline
+rel\_tracks\_playlist & playlists \\
+id\_playlist & id\_playlist \\
+\hline
+rel\_tracks\_playlist & canciones \\
+id\_cancion & id\_cancion \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\subsection{Tabla: rel\_art\_track}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE IF NOT EXISTS rel_art_track (
+    id_artista INT NOT NULL,
+    id_cancion INT NOT NULL,
+    rol VARCHAR(50) DEFAULT 'Principal',
+    PRIMARY KEY (id_artista, id_cancion)
+) ENGINE=InnoDB;
+\end{lstlisting}
+
+\noindent\textbf{¿Por qué se creó cada columna?}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \texttt{id\_artista}: Referencia al músico participante.
+    \item \texttt{id\_cancion}: Referencia a la canción interpretada o producida.
+    \item \texttt{rol}: Etiqueta para distinguir colaboraciones (vocalista principal, featuring, productor).
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Referenciaciones} \\[0.3em]
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Tabla Origen} & \textbf{Tabla Destino} \\
+\hline
+rel\_art\_track & artistas \\
+id\_artista & id\_artista \\
+\hline
+rel\_art\_track & canciones \\
+id\_cancion & id\_cancion \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\subsection{Tabla: rel\_art\_album}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE IF NOT EXISTS rel_art_album (
+    id_artista INT NOT NULL,
+    id_album INT NOT NULL,
+    PRIMARY KEY (id_artista, id_album)
+) ENGINE=InnoDB;
+\end{lstlisting}
+
+\noindent\textbf{¿Por qué se creó cada columna?}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \texttt{id\_artista}: Referencia al autor o creador musical.
+    \item \texttt{id\_album}: Referencia al disco publicado.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Referenciaciones} \\[0.3em]
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Tabla Origen} & \textbf{Tabla Destino} \\
+\hline
+rel\_art\_album & artistas \\
+id\_artista & id\_artista \\
+\hline
+rel\_art\_album & albumes \\
+id\_album & id\_album \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\subsection{Tabla: rel\_notes\_album}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE IF NOT EXISTS rel_notes_album (
+    id_nota INT NOT NULL,
+    id_album INT NOT NULL,
+    PRIMARY KEY (id_nota, id_album)
+) ENGINE=InnoDB;
+\end{lstlisting}
+
+\noindent\textbf{¿Por qué se creó cada columna?}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \texttt{id\_nota}: Referencia al apunte escrito por el usuario.
+    \item \texttt{id\_album}: Referencia al disco sobre el cual se hizo el apunte.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Referenciaciones} \\[0.3em]
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Tabla Origen} & \textbf{Tabla Destino} \\
+\hline
+rel\_notes\_album & notas \\
+id\_nota & id\_nota \\
+\hline
+rel\_notes\_album & albumes \\
+id\_album & id\_album \\
+\hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\subsection{Tabla: rel\_user\_playlist}
+\begin{lstlisting}[style=sqlstyle]
+CREATE TABLE IF NOT EXISTS rel_user_playlist (
+    id_usuario INT NOT NULL,
+    id_playlist INT NOT NULL,
+    es_propietario BOOLEAN DEFAULT TRUE,
+    PRIMARY KEY (id_usuario, id_playlist)
+) ENGINE=InnoDB;
+\end{lstlisting}
+
+\noindent\textbf{¿Por qué se creó cada columna?}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \texttt{id\_usuario}: Referencia a la cuenta de usuario del sistema.
+    \item \texttt{id\_playlist}: Referencia a la lista musical interactuada.
+    \item \texttt{es\_propietario}: Indicador para diferenciar si el usuario es creador de la playlist o si solo la guardó como favorita.
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Referenciaciones} \\[0.3em]
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Tabla Origen} & \textbf{Tabla Destino} \\
+\hline
+rel\_user\_playlist & usuarios \\
+id\_usuario & id\_usuario \\
+\hline
+rel\_user\_playlist & playlists \\
+id\_playlist & id\_playlist \\
+\hline
+\end{tabular}
+\section{Relaciones (Llaves Foráneas)}
+
+En esta sección se definen las restricciones de integridad referencial aplicadas mediante sentencias \texttt{ALTER TABLE}, las cuales enlazan las entidades maestras a través de las tablas intermedias. Todas incluyen reglas de eliminación y actualización en cascada (\texttt{ON DELETE CASCADE ON UPDATE CASCADE}) para evitar registros huérfanos.
+
+\subsection{Relación: Álbum - Canciones (\texttt{rel\_tracks\_album})}
+\begin{lstlisting}[style=sqlstyle]
+ALTER TABLE rel_tracks_album
+    ADD CONSTRAINT fk_rta_album FOREIGN KEY (id_album) REFERENCES albumes(id_album),
+    ADD CONSTRAINT fk_rta_cancion FOREIGN KEY (id_cancion) REFERENCES canciones(id_cancion);
+\end{lstlisting}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \textbf{Columnas relacionadas:} La columna \texttt{id\_album} se vincula con \texttt{albumes(id\_album)} y la columna \texttt{id\_cancion} se vincula con \texttt{canciones(id\_cancion)}.
+    \item \textbf{Tipo de relación:} Muchos a Muchos (N:M) entre \texttt{albumes} y \texttt{canciones}.
+    \item \textbf{¿Por qué se relaciona?} Para estructurar el contenido de un disco. Un álbum contiene múltiples canciones, y una misma pista de audio puede pertenecer a más de un álbum (por ejemplo, álbumes de estudio originales frente a discos de grandes éxitos o recopilaciones) sin necesidad de duplicar el archivo físico en el sistema.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\subsection{Relación: Playlist - Canciones (\texttt{rel\_tracks\_playlist})}
+\begin{lstlisting}[style=sqlstyle]
+ALTER TABLE rel_tracks_playlist
+    ADD CONSTRAINT fk_rtp_playlist FOREIGN KEY (id_playlist) REFERENCES playlists(id_playlist),
+    ADD CONSTRAINT fk_rtp_cancion FOREIGN KEY (id_cancion) REFERENCES canciones(id_cancion);
+\end{lstlisting}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \textbf{Columnas relacionadas:} La columna \texttt{id\_playlist} se vincula con \texttt{playlists(id\_playlist)} y la columna \texttt{id\_cancion} se vincula con \texttt{canciones(id\_cancion)}.
+    \item \textbf{Tipo de relación:} Muchos a Muchos (N:M) entre \texttt{playlists} y \texttt{canciones}.
+    \item \textbf{¿Por qué se relaciona?} Para permitir al usuario crear agrupaciones personalizadas. Una lista de reproducción está compuesta por múltiples canciones, y una misma canción puede ser agregada a docenas de playlists diferentes.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\subsection{Relación: Artista - Canción (\texttt{rel\_art\_track})}
+\begin{lstlisting}[style=sqlstyle]
+ALTER TABLE rel_art_track
+    ADD CONSTRAINT fk_rat_artista FOREIGN KEY (id_artista) REFERENCES artistas(id_artista),
+    ADD CONSTRAINT fk_rat_cancion FOREIGN KEY (id_cancion) REFERENCES canciones(id_cancion);
+\end{lstlisting}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \textbf{Columnas relacionadas:} La columna \texttt{id\_artista} se vincula con \texttt{artistas(id\_artista)} y la columna \texttt{id\_cancion} se vincula con \texttt{canciones(id\_cancion)}.
+    \item \textbf{Tipo de relación:} Muchos a Muchos (N:M) entre \texttt{artistas} y \texttt{canciones}.
+    \item \textbf{¿Por qué se relaciona?} Para gestionar correctamente los créditos musicales. Un artista interpreta o produce muchas canciones, pero a su vez, una sola canción puede tener la participación de múltiples artistas simultáneamente (colaboraciones, artistas invitados o \textit{featurings}).
+\end{itemize}
+
+\vspace{0.5cm}
+
+\subsection{Relación: Artista - Álbum (\texttt{rel\_art\_album})}
+\begin{lstlisting}[style=sqlstyle]
+ALTER TABLE rel_art_album
+    ADD CONSTRAINT fk_raa_artista FOREIGN KEY (id_artista) REFERENCES artistas(id_artista),
+    ADD CONSTRAINT fk_raa_album FOREIGN KEY (id_album) REFERENCES albumes(id_album);
+\end{lstlisting}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \textbf{Columnas relacionadas:} La columna \texttt{id\_artista} se vincula con \texttt{artistas(id\_artista)} y la columna \texttt{id\_album} se vincula con \texttt{albumes(id\_album)}.
+    \item \textbf{Tipo de relación:} Muchos a Muchos (N:M) entre \texttt{artistas} y \texttt{albumes}.
+    \item \textbf{¿Por qué se relaciona?} Para atribuir la autoría a nivel de disco completo. Si bien lo normal es que un álbum sea de un solo artista (1:N), existen álbumes colaborativos creados en conjunto por dos o más artistas principales, lo que hace necesaria una estructura de muchos a muchos.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\subsection{Relación: Notas - Álbum (\texttt{rel\_notes\_album})}
+\begin{lstlisting}[style=sqlstyle]
+ALTER TABLE rel_notes_album
+    ADD CONSTRAINT fk_rna_nota FOREIGN KEY (id_nota) REFERENCES notas(id_nota),
+    ADD CONSTRAINT fk_rna_album FOREIGN KEY (id_album) REFERENCES albumes(id_album);
+\end{lstlisting}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \textbf{Columnas relacionadas:} La columna \texttt{id\_nota} se vincula con \texttt{notas(id\_nota)} y la columna \texttt{id\_album} se vincula con \texttt{albumes(id\_album)}.
+    \item \textbf{Tipo de relación:} Muchos a Muchos (N:M) a nivel de esquema lógico.
+    \item \textbf{¿Por qué se relaciona?} Para vincular los comentarios, reseñas o apuntes del usuario con un trabajo discográfico específico. Permite que un álbum acumule múltiples notas a lo largo del tiempo, y flexibiliza el modelo si una misma nota (por ejemplo, una reseña general de una década) aplicara a más de un disco.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\subsection{Relación: Usuario - Playlist (\texttt{rel\_user\_playlist})}
+\begin{lstlisting}[style=sqlstyle]
+ALTER TABLE rel_user_playlist
+    ADD CONSTRAINT fk_rup_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+    ADD CONSTRAINT fk_rup_playlist FOREIGN KEY (id_playlist) REFERENCES playlists(id_playlist);
+\end{lstlisting}
+\begin{itemize}[noitemsep,topsep=2pt]
+    \item \textbf{Columnas relacionadas:} La columna \texttt{id\_usuario} se vincula con \texttt{usuarios(id\_usuario)} y la columna \texttt{id\_playlist} se vincula con \texttt{playlists(id\_playlist)}.
+    \item \textbf{Tipo de relación:} Muchos a Muchos (N:M) entre \texttt{usuarios} y \texttt{playlists}.
+    \item \textbf{¿Por qué se relaciona?} Para administrar la propiedad e interacción social del sistema. Un usuario puede tener muchas playlists, y una playlist creada por alguien podría ser guardada como ``favorita'' por múltiples usuarios diferentes, operando de manera similar al modelo de Spotify.
+\end{itemize}
+
+\end{document}
+
+\begin{lstlisting}[style=pythonstyle]
+def calcular_promedio(numeros):
+    # Calculamos el promedio
+    return sum(numeros) / len(numeros)
+
+resultado = calcular_promedio([10, 20, 30])
+print(f"Promedio: {resultado}")
+\end{lstlisting}
